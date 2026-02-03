@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Upload</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <h1>Upload</h1>
+      <a class="btn secondary" href="{{ url_for('gallery') }}">⬅ Back</a>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">{{ messages[0] }}</div>
+      {% endif %}
+    {% endwith %}
+
+    <form class="card" method="post" enctype="multipart/form-data" style="padding:14px">
+      <div style="display:grid; gap:10px;">
+        <label>Photo
+          <input style="display:block; margin-top:6px" type="file" name="photo" accept="image/*" required>
+        </label>
+
+        <label>Title
+          <input style="display:block; width:100%; margin-top:6px; padding:10px; border-radius:12px; border:1px solid var(--border); background:#0b0e12; color:var(--text);"
+                 type="text" name="title" placeholder="ex: Apus in Sibiu">
+        </label>
+
+        <label>Album
+          <input style="display:block; width:100%; margin-top:6px; padding:10px; border-radius:12px; border:1px solid var(--border); background:#0b0e12; color:var(--text);"
+                 type="text" name="album" value="General" placeholder="ex: Vacanta">
+        </label>
+
+        <label>Tags (virgula)
+          <input style="display:block; width:100%; margin-top:6px; padding:10px; border-radius:12px; border:1px solid var(--border); background:#0b0e12; color:var(--text);"
+                 type="text" name="tags" placeholder="ex: munte, apus, friends">
+        </label>
+
+        <button class="btn" type="submit">Upload</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
