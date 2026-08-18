@@ -1,44 +1,71 @@
-# 🌳 DerivationTree – Formal Languages Project
+# PhotoGallery
 
-## 📘 Descriere
-**DerivationTree** este o aplicație console scrisă în **C# (.NET)** care construiește și analizează **arbori de derivare** pentru o **gramatică formală independentă de context (CFG)**.
+A web photo manager built with Flask and SQLite. Upload images, organise them
+into albums with tags, and browse them in a gallery view.
 
-Proiectul este realizat în cadrul cursului **Limbaje Formale și Compilatoare** și demonstrează procesul complet de generare a derivărilor, aplicarea regulilor de producție și optimizarea căutării prin tehnici de pruning.
+## Features
 
----
+- Upload with extension whitelisting (`.jpg`, `.jpeg`, `.png`, `.webp`, `.gif`)
+- Album and tag organisation
+- Gallery view ordered by upload date
+- Delete removes both the database record and the file on disk
+- Collision-free storage: files are renamed with a microsecond timestamp,
+  while the original filename is kept in the database
 
-## 🎯 Obiective
-- Definirea unei gramatici formale:  
-  - **Vn** – mulțimea neterminalelor  
-  - **Vt** – mulțimea terminalelor  
-  - **S** – simbolul de start  
-  - **P** – mulțimea producțiilor
-- Construirea arborelui de derivare
-- Generarea tuturor derivărilor posibile pentru un cuvânt
-- Optimizarea procesului prin:
-  - pruning
-  - calcul de lungime minimă
-  - snapshot & restore
-- Afișarea structurii arborelui
+## Tech Stack
 
----
+| Layer | Technology |
+|---|---|
+| Backend | Python, Flask |
+| Database | SQLite |
+| Templates | Jinja2 |
 
-## 🧠 Concepte teoretice folosite
-- Gramatici independente de context (CFG)
-- Arbori de derivare
-- Frontiere de derivare
-- Recursivitate
-- Backtracking
-- Tehnici de optimizare în explorarea spațiului de căutare
+## Data Model
 
----
+```sql
+CREATE TABLE photos (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    filename      TEXT NOT NULL,   -- stored name (timestamped)
+    original_name TEXT NOT NULL,   -- name as uploaded
+    title         TEXT NOT NULL,
+    album         TEXT NOT NULL DEFAULT 'General',
+    tags          TEXT NOT NULL DEFAULT '',
+    size_bytes    INTEGER NOT NULL,
+    uploaded_at   TEXT NOT NULL
+);
+```
 
-## 🛠️ Tehnologii utilizate
-- **C#**
-- **.NET Console Application**
-- **Visual Studio 2022**
-- **Git & GitHub**
+Indexed on `uploaded_at` and `album`, the two columns the gallery filters and
+sorts by.
 
----
+## Routes
 
-## 📂 Structura proiectului
+| Method | Path | Purpose |
+|---|---|---|
+| GET | `/gallery` | Gallery view |
+| GET | `/upload` | Upload form |
+| POST | `/upload` | Handle upload |
+| POST | `/photo/<id>/delete` | Delete photo and file |
+| GET | `/uploads/<filename>` | Serve stored image |
+
+## Getting Started
+
+```bash
+git clone https://github.com/F1N3G/PhotoGallery.git
+cd PhotoGallery
+
+python -m venv .venv
+source .venv/bin/activate      # Windows: .venv\Scripts\activate
+
+pip install flask
+python app.py
+```
+
+Runs at `http://localhost:5000`. The database and `uploads/` directory are
+created automatically on first run.
+
+## Possible Extensions
+
+- User accounts, so albums are per-user
+- Thumbnail generation instead of serving full-size images in the gallery
+- Pagination for large collections
